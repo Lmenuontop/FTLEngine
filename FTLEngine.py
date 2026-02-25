@@ -23,10 +23,10 @@ class Engine:
         pygame.display.set_caption(title)
         self.clock = pygame.time.Clock()
 
-    def begin_frame(self):
-        self.DISPLAY.fill((30, 30, 30))
+    #def begin_frame(self):
+       #self.DISPLAY.fill((30, 30, 30))
 
-    def end_frame(self):
+    def update(self):
         pygame.display.flip()
         self.clock.tick(60)
 
