@@ -28,7 +28,7 @@ class Engine:
 
     def update(self):
         pygame.display.flip()
-        clock.tick(60)
+        self.clock.tick(60)
 
     def handle_events(self):
         for event in pygame.event.get():
