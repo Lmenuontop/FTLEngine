@@ -173,60 +173,11 @@ class Engine:
                 key_name = pygame.key.name(event.key)  # Get readable key name
                 return key_name
 
-            # Detect a key release (optional)
+            
             if event.type == pygame.KEYUP:
                 key_name = pygame.key.name(event.key)
                 return key_name
     #def play_music(file):
         #make this play music when called
-###    
-# # collision is cooked
-# create_display(1080, 920)
-# set_display_title("test for my set of functions")
-# # Load the player sprite multiple sprite test
-# player_sprite = load_asset("enemy.png", "Assets")
-# enemy_sprite = load_asset("player.png", "Assets")
-# # Assume the sprite is 50px by 50px (you should adjust this based on your actual sprite size)
-# sprite_width, sprite_height = player_sprite.get_width(), player_sprite.get_height()
-# key = pygame.key.get_pressed()
-# # Ingitial position of the sprite
-# player_x, player_y = 250, 250
-# enemy_x, enemy_y = 250 + 50, 250 + 50
-# # Get the display size for collision checking
-# display_width, display_height = 1080, 920
-# #game loop stuff
-# running = True
-# while running:
-#     for event in pygame.event.get():
-#         if event.type == QUIT:
-#             running= False
-#             print("process exited")
-#     #enable devmode
-#     devmode(True)
-#     # Update the sprite's position based on keyboard input
-#     player_x, player_y = add_default_movement(player_x, player_y)
-#     # Check for border collision
-#     player_x, player_y = check_border_collision(player_x, player_y, display_width, display_height, sprite_width, sprite_height)
-#     # Check for sprite collision
-#     collision_detected, player_x, player_y = sprite_collision(player_x, player_y, enemy_x, enemy_y)
-#     ##COMMENTING THIS LINE MAKE SOME STUPID THING HAPPEN???
-#     DISPLAY.fill((255, 255, 255))  # White background
-#     # Draw the player and enemy sprites
-#
-#     draw_sprite(player_sprite, player_x, player_y)
-#     draw_sprite(enemy_sprite, enemy_x, enemy_y)
-#     # Update the display
-#     pygame.display.update()
-#     if key[K_KP1] and devmode(True):
-#         player_x = player_x + 10
-#         player_y = player_y + 10
-#     random_number(1, 100)
-#     enemy_ai_movement(enemy_x, enemy_y, player_x, player_y, 1)
-#     draw_sprite(player_sprite, player_x, player_y)
-#
-#Quit pygame n stuff
-#pygame.quit()
-#end of test
-#sys.exit()
-###
+
 
