@@ -167,6 +167,16 @@ class Engine:
     def drawRect(self,left,top,width,height,colour):
         rect = pygame.Rect(left,top,width,height)
         pygame.draw.rect(self.DISPLAY, colour, rect)
+    def getKeyPressed(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                key_name = pygame.key.name(event.key)  # Get readable key name
+                return key_name
+
+            # Detect a key release (optional)
+            if event.type == pygame.KEYUP:
+                key_name = pygame.key.name(event.key)
+                return key_name
     #def play_music(file):
         #make this play music when called
 ###    
@@ -218,5 +228,5 @@ class Engine:
 #pygame.quit()
 #end of test
 #sys.exit()
-
+###
 
