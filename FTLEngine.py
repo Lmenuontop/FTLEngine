@@ -23,18 +23,21 @@ class Engine:
         pygame.display.set_caption(title)
         self.clock = pygame.time.Clock()
 
-    #def begin_frame(self):
-       #self.DISPLAY.fill((30, 30, 30))
+    def begin_frame(self):
+        self.DISPLAY.fill((30, 30, 30))
 
-    def update(self):
+    def end_frame(self):
         pygame.display.flip()
         self.clock.tick(60)
 
     def handle_events(self):
+        self.last_click = None
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.last_click = event.pos
 
 
     def load_asset(self, asset_name, directory):
@@ -78,20 +81,17 @@ class Engine:
         return target_y
     
     def draw_sprite(self, asset_name_draw, x_draw, y_draw):
+        sprite = self.load_asset(asset_name_draw, "assets")
         self.DISPLAY.blit(asset_name_draw, (x_draw, y_draw))
 
-    def border_collision(self, asset_to_move_x_pos, asset_to_move_y_pos, width, height, sprite_width, sprite_height):
-        # Prevent the sprite from going out of bounds on all sides
-        if asset_to_move_x_pos < 0:
-            asset_to_move_x_pos = 0
-        elif asset_to_move_x_pos > width - sprite_width:
-            asset_to_move_x_pos = width - sprite_width
+    def border_collision(self, x, y, sprite_width, sprite_height):
+        width, height = self.DISPLAY.get_size()
 
-        if asset_to_move_y_pos < 0:
-            asset_to_move_y_pos = 0
-        elif asset_to_move_y_pos > height - sprite_height:
-            asset_to_move_y_pos = height - sprite_height
-        return asset_to_move_x_pos, asset_to_move_y_pos
+        x = max(0, min(x, width - sprite_width))
+        y = max(0, min(y, height - sprite_height))
+
+        return x, y
+
     def sprite_collision(self, player_x, player_y, enemy_x, enemy_y):
         if player_x < enemy_x + 50 and player_x + 50 > enemy_x and player_y < enemy_y + 50 and player_y + 50 > enemy_y:
             #Make this stop the sprites instead of teleportin the player
@@ -113,8 +113,10 @@ class Engine:
     def devmode(self, TF):
         if TF == True:
             print("(Ab)Using devmode")
+            return True
         else:
             print("Not using dev mode")
+            return False
     def random_number(self, lower_range, upper_range):
         randnum = random.randint(lower_range, upper_range)
         return randnum
@@ -139,9 +141,9 @@ class Engine:
             enemy_y -= speed
 
         return enemy_x, enemy_y
-    def debug_log(self, message, dvv):
+    def debug_log(self, message, devmode):
         #dvv stands for dev value(checks value of dev_mode)
-        if dvv == True:
+        if devmode == True:
             print(message)
         else:
             print("you need dev mode to see this debug message") 
@@ -159,11 +161,15 @@ class Engine:
         mixer.music.load(file)
         mixer.music.set_volume(volume)
         mixer.music.play()
-    
-    def drawTriangle(self,x,y,z):
-        pygame.draw.line(DISPLAY, x, y)
-        pygame.draw.line(DISPLAY, y, z)
-        pygame.draw.line(DISPLAY, z, x)
+    def draw_line(self, p1, p2, colour): #p1, p2 - point 1, point 2
+        pygame.draw.line(self.DISPLAY, (colour), (p1), (p2)) 
+    def draw_triangle(self,x,y,z):
+        pygame.draw.line(self.DISPLAY, x, y)
+        pygame.draw.line(self.DISPLAY, y, z)
+        pygame.draw.line(self.DISPLAY, z, x)
+    def draw_circle(self, centerx, centery, radius, colour):
+        pygame.draw.circle(self.DISPLAY, colour, (centerx,centery), radius)
+
 
     #def play_music(file):
         #make this play music when called
@@ -216,5 +222,4 @@ class Engine:
 #pygame.quit()
 #end of test
 #sys.exit()
-###
 
