@@ -169,6 +169,8 @@ class Engine:
         pygame.draw.line(self.DISPLAY, z, x)
     def draw_circle(self, centerx, centery, radius, colour):
         pygame.draw.circle(self.DISPLAY, colour, (centerx,centery), radius)
+    def draw_rectangle(self, centerx, centery, width, height, colour):
+        pygame.draw.rect(self.DISPLAY, colour, (centerx, centery, width, height))
 
 
     #def play_music(file):

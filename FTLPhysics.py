@@ -53,8 +53,8 @@ def calc_collision(circles):
 
 #cicle:
 class circle():
-    def __init__(self, x, y, colour):
-        self.bounciness = 8 #1-10
+    def __init__(self, x, y, bounciness, colour):
+        self.bounciness = bounciness #1-10
         self.weight = 100 #newtons
         self.g = 9.81 #meters
         self.mass = self.weight / self.g
@@ -168,88 +168,37 @@ class spring():
     def render(self):
         eng.draw_line((self.x1, self.y1),(self.x2, self.y2),self.colour)
 
+# do a bubble sort ig...
 
-
-
+class rectangle(circle):
+    def __init__(self, x, y, width, height, bounciness, colour):
+        self.bounciness = bounciness #1-10
+        self.width = width
+        self.height = height
+        self.weight = 100 #newtons
+        self.g = 9.81 #meters
+        self.mass = self.weight / self.g
+        self.acceleration = gravity
+        self.velocity = 0
+        self.velocityx = 0
+        self.x = x
+        self.y = y
+        self.radius = self.width
+        self.radius_meters = self.radius / PIXELS_PER_METER
+        self.area = pi*(self.radius_meters)**2
+        self.colour = colour
+        
+    def render(self):
+        eng.draw_rectangle(self.x, self.y, self.width, self.height, self.colour)
+"""
 #example usage:
 
-circles = [circle(100,100, (0,0,255)), circle(200,200,(255,0,10)), circle(300, 300, (0, 255, 0))] # list of every circle
+circles = [circle(100,100, 8, (0,0,255)), circle(200,200,8,(255,0,10)), circle(300, 300, 8, (0, 255, 0))] # list of every circle
 springs = []
+squares = [rectangle(100, 100, 10, 10, 8, (255,255,255))]
 
 
-# im larping neovide cus what is ts setup
 
-"""
-#chat:
-circles = []
-springs = []
-
-width = 5
-height = 5
-spacing = 50
-
-# Create circles
-for y in range(height):
-    for x in range(width):
-        circles.append(
-            circle(
-                100 + x * spacing,
-                100 + y * spacing,
-                (0, 0, 255)
-            )
-        )
-
-# Connect circles with springs
-for y in range(height):
-    for x in range(width):
-
-        index = y * width + x
-
-        # Connect to the circle on the right
-        if x < width - 1:
-            springs.append(
-                spring(
-                    circles[index],
-                    circles[index + 1],
-                    spacing,
-                    (255, 255, 255)
-                )
-            )
-
-        # Connect to the circle below
-        if y < height - 1:
-            springs.append(
-                spring(
-                    circles[index],
-                    circles[index + width],
-                    spacing,
-                    (255, 255, 255)
-                )
-            )
-        # horizontal 2-away
-        if x < width - 2:
-            springs.append(
-                spring(
-                    circles[index],
-                    circles[index + 2],
-                    spacing * 2,
-                    (255, 255, 255)
-                )
-            )
-
-        # vertical 2-away
-        if y < height - 2:
-            springs.append(
-                spring(
-                    circles[index],
-                    circles[index + width * 2],
-                    spacing * 2,
-                    (255, 255, 255)
-                )
-            )
-"""
-# vscode-vim doesn't have inoremap
-#in vscode, holding middle click and dragging up or down makes a bunch of cursors
 
 dv = eng.devmode(True)
 circle_count = 3
@@ -268,13 +217,19 @@ while True:
     for s in springs:
         s.physics()
         s.render()
+
+    for q in squares:
+        q.physics()
+        q.border_collision()
+        q.render()
+        
     
     circles[2].keyboard_movement()
     calc_collision(circles)
     eng.handle_events()
     if eng.last_click and circle_count < MAX_CIRCLES:
         x,y = eng.last_click
-        circles.append(circle(x,y, WHITE))
+        circles.append(circle(x, y, 8, WHITE))
         eng.debug_log("New circle created", dv)
         circle_count += 1
 
@@ -283,5 +238,5 @@ while True:
         springs.append(spring(circles[p], circles[p+1], 150, WHITE))
     
     eng.end_frame()
-
 #end
+"""
