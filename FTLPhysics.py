@@ -168,7 +168,7 @@ class spring():
     def render(self):
         eng.draw_line((self.x1, self.y1),(self.x2, self.y2),self.colour)
 
-# do a bubble sort ig...
+
 
 class rectangle(circle):
     def __init__(self, x, y, width, height, bounciness, colour):
@@ -196,8 +196,6 @@ class rectangle(circle):
 circles = [circle(100,100, 8, (0,0,255)), circle(200,200,8,(255,0,10)), circle(300, 300, 8, (0, 255, 0))] # list of every circle
 springs = []
 squares = [rectangle(100, 100, 10, 10, 8, (255,255,255))]
-
-
 
 
 dv = eng.devmode(True)
