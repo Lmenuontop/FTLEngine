@@ -39,7 +39,6 @@ class ui:
         if ui.onclick(100,100):
             print("Clicked")
         """
-
         if (x, y) not in self.buttons:
             return False
 
