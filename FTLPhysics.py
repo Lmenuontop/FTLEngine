@@ -11,6 +11,12 @@ MAX_CIRCLES = 2**6**3 - 2 # max 64 bit integer or sum
 gravity = 9.81 * PIXELS_PER_METER # 100 pixels = 1 meter
 pi = math.pi
 
+def apply_force(magnitude, direction):
+    ...
+    #finish this function, then write a book or sum
+    
+    
+
 def intersect(x1, y1, radius1, x2, y2, radius2):
     distance_squared = (x2-x1)**2 + (y2-y1)**2
     radius_sum = radius1 + radius2
@@ -97,10 +103,10 @@ class circle():
         
         #damping:
         damping = 0.98 #2%, loses 2% of velocity every frame
-        c.velocity *= damping
-        c.velocityx *= damping
+        self.velocity *= damping
+        self.velocityx *= damping
         return self.x, self.y
-
+    
     def border_collision(self):
         #if eng.border_collision(self.x,self.y,self.radius,self.radius):
         #self.x, self.y = eng.border_collision(self.x, self.y, self.radius, self.radius) 
@@ -134,9 +140,9 @@ class spring():
 
         self.target_length = target_length
         self.colour = colour
-        self.force = 1
-        
-
+        # icreasing this makes things like soft-bodies stay together instead of falling apart
+        # it's the strength of the spring
+        self.force = 100
         self.length = math.sqrt((circle2.x - circle1.x)**2 + (circle2.y - circle1.y)**2)
 
 
@@ -157,12 +163,12 @@ class spring():
         self.distance = math.hypot(self.distX, self.distY)
         #if self.distance < 0.00001:
         #    return
-
+        strength = self.force
         if self.distance > 0:
-            self.circle1.velocityx += -self.distX * (1 - self.target_length/self.distance)/2 * self.force/10
-            self.circle1.velocity  += -self.distY * (1 - self.target_length/self.distance)/2 * self.force/10
-            self.circle2.velocityx +=  self.distX * (1 - self.target_length/self.distance)/2 * self.force/10
-            self.circle2.velocity  +=  self.distY * (1 - self.target_length/self.distance)/2 * self.force/10
+            self.circle1.velocityx += -self.distX * (1 - self.target_length/self.distance)/2 * strength/10
+            self.circle1.velocity  += -self.distY * (1 - self.target_length/self.distance)/2 * strength/10
+            self.circle2.velocityx +=  self.distX * (1 - self.target_length/self.distance)/2 * strength/10
+            self.circle2.velocity  +=  self.distY * (1 - self.target_length/self.distance)/2 * strength/10
 
 
     def render(self):
@@ -190,13 +196,52 @@ class rectangle(circle):
         
     def render(self):
         eng.draw_rectangle(self.x, self.y, self.width, self.height, self.colour)
+
+#brotato comic code doesnt have ligatures... I mean I did pirate it... Better than courier new ngl...
+
 """
 #example usage:
-
+"""
 circles = [circle(100,100, 8, (0,0,255)), circle(200,200,8,(255,0,10)), circle(300, 300, 8, (0, 255, 0))] # list of every circle
 springs = []
 squares = [rectangle(100, 100, 10, 10, 8, (255,255,255))]
 
+for p in range(0, (len(circles) - 1)):
+    springs.append(spring(circles[p], circles[p+1], 150, WHITE))
+"""
+#chat:
+circles = [
+    circle(150, 100, 8, WHITE),  # 0 top
+    circle(185, 115, 8, WHITE),  # 1
+    circle(205, 150, 8, WHITE),  # 2
+    circle(185, 185, 8, WHITE),  # 3
+    circle(150, 200, 8, WHITE),  # 4 bottom
+    circle(115, 185, 8, WHITE),  # 5
+    circle(95, 150, 8, WHITE),   # 6
+    circle(115, 115, 8, WHITE),  # 7
+]
+
+springs = [
+    # outer ring
+    spring(circles[0], circles[1], 37, WHITE),
+    spring(circles[1], circles[2], 40, WHITE),
+    spring(circles[2], circles[3], 40, WHITE),
+    spring(circles[3], circles[4], 37, WHITE),
+    spring(circles[4], circles[5], 37, WHITE),
+    spring(circles[5], circles[6], 40, WHITE),
+    spring(circles[6], circles[7], 40, WHITE),
+    spring(circles[7], circles[0], 37, WHITE),
+
+    # cross-bracing
+    spring(circles[0], circles[2], 65, WHITE),
+    spring(circles[1], circles[3], 65, WHITE),
+    spring(circles[2], circles[4], 65, WHITE),
+    spring(circles[3], circles[5], 65, WHITE),
+    spring(circles[4], circles[6], 65, WHITE),
+    spring(circles[5], circles[7], 65, WHITE),
+    spring(circles[6], circles[0], 65, WHITE),
+    spring(circles[7], circles[1], 65, WHITE),
+]
 
 dv = eng.devmode(True)
 circle_count = 3
@@ -216,11 +261,11 @@ while True:
         s.physics()
         s.render()
 
-    for q in squares:
-        q.physics()
-        q.border_collision()
-        q.render()
-        
+    #for q in squares:
+     #   q.physics()
+      #  q.border_collision()
+       # q.render()
+      
     
     circles[2].keyboard_movement()
     calc_collision(circles)
@@ -232,9 +277,9 @@ while True:
         circle_count += 1
 
 
-    for p in range(0, (len(circles) - 1)):
-        springs.append(spring(circles[p], circles[p+1], 150, WHITE))
+
     
     eng.end_frame()
 #end
 """
+
