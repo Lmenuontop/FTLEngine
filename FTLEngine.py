@@ -17,6 +17,11 @@ player_x = None
 player_y = None
 velocity = 0
 class Engine:
+    def __init__(self):
+        self.keys = pygame.key.get_pressed()
+        self.last_click = None
+        self.DISPLAY = None
+        self.clock = None
     def create_display(self, width, height, title):
         pygame.init()
         self.DISPLAY = pygame.display.set_mode((width, height))
@@ -32,13 +37,14 @@ class Engine:
 
     def handle_events(self):
         self.last_click = None
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.last_click = event.pos
-
+            self.keys = pygame.key.get_pressed()
 
     def load_asset(self, asset_name, directory):
         return pygame.image.load(f"{directory}/{asset_name}")
