@@ -2,6 +2,8 @@
 # basic physics for FTLEngine
 from FTLEngine import Engine
 import math
+import pygame
+from pygame.locals import *
 eng = Engine()
 eng.create_display(800, 600,  "hello")
 #constants:
@@ -11,7 +13,7 @@ MAX_CIRCLES = 2**6**3 - 2 # max 64 bit integer or sum
 gravity = 9.81 * PIXELS_PER_METER # 100 pixels = 1 meter
 pi = math.pi
 
-def apply_force(magnitude, direction):
+def apply_force(object, magnitude, direction):
     ...
     #finish this function, then write a book or sum
     
@@ -59,7 +61,7 @@ def calc_collision(circles):
 
 #cicle:
 class circle():
-    def __init__(self, x, y, bounciness, colour):
+    def __init__(self, x, y, bounciness, colour, tag=False): #tag is for player circles if you want to call only movement for example
         self.bounciness = bounciness #1-10
         self.weight = 100 #newtons
         self.g = 9.81 #meters
@@ -73,6 +75,7 @@ class circle():
         self.radius_meters = self.radius / PIXELS_PER_METER
         self.area = pi*(self.radius_meters)**2
         self.colour = colour
+        self.tag = tag
         #self.terminal_velocity = math.sqrt((2*self.mass*gravity) / (1.225*1.2*self.area)) #quadratic drag formula
         #w = mg
         #m = w/g
@@ -128,10 +131,18 @@ class circle():
 
     #collision code using vector notmals and tangents and the 1d elastic collision formula
     
-    
-    def keyboard_movement(self):
-        ...  
-        return self.x, self.y
+    def keyboard_movement(self, acceleration):  
+        keys = eng.keys
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
+            self.velocity -= acceleration * dt
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            self.velocity += acceleration * dt
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            self.velocityx -= acceleration * dt
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            self.velocityx += acceleration * dt
+        return self.velocity, self.velocityx, self.x, self.y
+
 #can do cloth sims once this is done
 class spring():
     def __init__(self, circle1, circle2, target_length, colour):
@@ -140,9 +151,10 @@ class spring():
 
         self.target_length = target_length
         self.colour = colour
-        # icreasing this makes things like soft-bodies stay together instead of falling apart
-        # it's the strength of the spring
         self.force = 100
+        
+        
+
         self.length = math.sqrt((circle2.x - circle1.x)**2 + (circle2.y - circle1.y)**2)
 
 
@@ -169,12 +181,13 @@ class spring():
             self.circle1.velocity  += -self.distY * (1 - self.target_length/self.distance)/2 * strength/10
             self.circle2.velocityx +=  self.distX * (1 - self.target_length/self.distance)/2 * strength/10
             self.circle2.velocity  +=  self.distY * (1 - self.target_length/self.distance)/2 * strength/10
+            
 
 
     def render(self):
         eng.draw_line((self.x1, self.y1),(self.x2, self.y2),self.colour)
 
-
+# do a bubble sort ig...
 
 class rectangle(circle):
     def __init__(self, x, y, width, height, bounciness, colour):
@@ -202,12 +215,14 @@ class rectangle(circle):
 """
 #example usage:
 """
+"""
 circles = [circle(100,100, 8, (0,0,255)), circle(200,200,8,(255,0,10)), circle(300, 300, 8, (0, 255, 0))] # list of every circle
 springs = []
 squares = [rectangle(100, 100, 10, 10, 8, (255,255,255))]
 
 for p in range(0, (len(circles) - 1)):
     springs.append(spring(circles[p], circles[p+1], 150, WHITE))
+"""
 """
 #chat:
 circles = [
@@ -219,6 +234,7 @@ circles = [
     circle(115, 185, 8, WHITE),  # 5
     circle(95, 150, 8, WHITE),   # 6
     circle(115, 115, 8, WHITE),  # 7
+    circle(600, 600, 10, WHITE, tag=True)  # keyboard test
 ]
 
 springs = [
@@ -231,6 +247,7 @@ springs = [
     spring(circles[5], circles[6], 40, WHITE),
     spring(circles[6], circles[7], 40, WHITE),
     spring(circles[7], circles[0], 37, WHITE),
+    #ok what do i do now?
 
     # cross-bracing
     spring(circles[0], circles[2], 65, WHITE),
@@ -247,9 +264,12 @@ dv = eng.devmode(True)
 circle_count = 3
 while True:
     dt = eng.clock.tick(60) / 1000
+    eng.handle_events()
     eng.begin_frame()
+    if len(circles) > 8:
+        circles[8].keyboard_movement(400)
+        #eng.debug_log("Key", True)    
     
-
     for c in circles:
         c.physics()
         c.border_collision()
@@ -267,9 +287,9 @@ while True:
        # q.render()
       
     
-    circles[2].keyboard_movement()
+    
     calc_collision(circles)
-    eng.handle_events()
+    
     if eng.last_click and circle_count < MAX_CIRCLES:
         x,y = eng.last_click
         circles.append(circle(x, y, 8, WHITE))
